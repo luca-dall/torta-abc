@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Torta ABC{% if user.is_anonymous != 0 %} | {{ user }}{% endif %}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.svg.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-toggle.css' %}" rel="stylesheet">
+    
+
+    <!-- Custom CSS -->
+    <style>
+    body {
+        padding-top: 70px;
+        background: #eee !important;
+    }
+    .box_sommario{position:fixed;}
+    .box_torta {
+    position: fixed;
+    bottom:0px;
+}
+@media screen and (max-width: 990px) {
+    .box_torta {
+        position: static;
+    }
+    .navbar-text{padding-left: 15px;}
+}
+/* sidebar */
+.bs-docs-sidebar {
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* all links */
+.bs-docs-sidebar .nav>li>a {
+    color: #999;
+    border-left: 2px solid transparent;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* nested links */
+.bs-docs-sidebar .nav .nav>li>a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+}
+
+/* active & hover links */
+.bs-docs-sidebar .nav>.active>a.navfA, 
+.bs-docs-sidebar .nav>li>a.navfA:hover, 
+.bs-docs-sidebar .nav>li>a.navfA:focus {
+    color: #32ABDF;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    border-left-color: #32ABDF; 
+}
+.bs-docs-sidebar .nav>.active>a.navfB, 
+.bs-docs-sidebar .nav>li>a.navfB:hover, 
+.bs-docs-sidebar .nav>li>a.navfB:focus {
+    color: #D9C827;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    border-left-color: #D9C827; 
+}
+.bs-docs-sidebar .nav>.active>a.navfC, 
+.bs-docs-sidebar .nav>li>a.navfC:hover, 
+.bs-docs-sidebar .nav>li>a.navfC:focus {
+    color: #3FB34F;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    border-left-color: #3FB34F; 
+}
+/* all active links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>.active:hover>a,
+.bs-docs-sidebar .nav>.active:focus>a {
+    font-weight: 700;
+}
+/* nested active links */
+.bs-docs-sidebar .nav .nav>.active>a, 
+.bs-docs-sidebar .nav .nav>.active:hover>a,
+.bs-docs-sidebar .nav .nav>.active:focus>a {
+    font-weight: 500;
+}
+
+/* hide inactive nested list */
+.bs-docs-sidebar .nav ul.nav {
+    display: none;           
+}
+/* show active nested list */
+.bs-docs-sidebar .nav>.active>ul.nav {
+    display: block;           
+}
+
+h1,h2,h3{padding-top:70px;
+margin-top:-50px;}
+tr{padding-top:70px;
+margin-top:-70px;}
+.navbar-inverse a.navbar-brand:hover span#titleA{
+    color: #32ABDF;
+}
+.navbar-inverse a.navbar-brand:hover span#titleB{
+    color: #D9C827;
+}
+.navbar-inverse a.navbar-brand:hover span#titleC{
+    color: #3FB34F;
+}
+tr{border-left: solid 2px #fff;}
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}"><span class="glyphicon glyphicon-tent" aria-hidden="true"></span> Torta <span id="titleA">A</span><span id="titleB">B</span><span id="titleC">C</span></a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+             <li class="navbar-text">Annuncio torta &nbsp;
+             {% if annuncio.stato == 1 %}
+<input id="announce" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Si" data-off="No" data-onstyle="success" checked="1">
+{% else %}
+<input id="announce" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Si" data-off="No" data-onstyle="success">
+{% endif %}
+    
+  </li>
+                <li><a href="#"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Esporta PDF</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#aiuto"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Aiuto</a></li>
+{% if user.is_anonymous != 0 %}
+                    <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.first_name }} {{ user.last_name }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></li>
+          </ul>
+        </li>               
+      {% endif %}
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-8">
+            	{% block sinistra %}{% endblock sinistra %}
+            </div>
+            <div class="col-md-4">
+                {% block destra %}{% endblock destra %}
+            </div>
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery Version 1.11.1 -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/jquery.color.js' %}"></script>
+    <script src="{% static 'js/snap.svg.js' %}"></script>
+    <script src="{% static 'js/bootstrap-toggle.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+ {% block script %}{% endblock script %}
+
+ <div class="modal fade" id="aiuto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Aiuto</h4>
+      </div>
+      <div class="modal-body">
+        <p>Per problemi o maggiori informazioni scrivimi a <a href="mailto:luca@sesga.ch">luca@sesga.ch</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

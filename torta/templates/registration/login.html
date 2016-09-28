@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Torta ABC | Login</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.svg.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+    html { 
+  background: url({% static '/login_bg.jpg' %}) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+ 
+ body{background:  none !important;}
+
+.wrapper {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  background: !important none;
+}
+
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 30px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 20px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+#copyright{margin: 0 auto 0 auto; position:absolute; bottom:5px; text-align: center; width: 100%; color: #999; font-size: 9pt;}
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+{% if user.is_anonymous %}
+  <div class="wrapper" >
+    <form class="form-signin" method="post" action="{% url 'login' %}">   
+    {% csrf_token %}    
+      <h2 class="form-signin-heading"><span class="glyphicon glyphicon-tent" aria-hidden="true"></span> Torta ABC</h2>
+      <input type="text" class="form-control" name="username" placeholder="Nome utente" required="" autofocus="" />
+      <input type="password" class="form-control" name="password" placeholder="Password" required=""/>   
+      {% if form.errors %}
+<p>Il nome utente o la password non sono corretti. Riprova.</p>
+<p>Per ulteriori domande contatta <a href="mailto:luca@sesga.ch">luca@sesga.ch</a>.</p>
+{% endif %}    
+<input type="hidden" name="next" value="{{ next }}" />
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Accedi</button>   
+    </form>
+  </div>
+{% endif %}
+<p id="copyright">&copy; 2016 Riccio</p>
+<!-- jQuery Version 1.11.1 -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/snap.svg.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

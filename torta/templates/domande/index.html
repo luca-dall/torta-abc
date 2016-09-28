@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block sinistra %}
+<div class="panel panel-default">
+  <div class="panel-body">
+
+{% if domande %}
+
+    {% for domanda in domande %}
+
+    {% ifchanged domanda.fetta %}</table><h2 id="Fetta{{domanda.fetta}}">Fetta {{domanda.fetta}}</h2>{% endifchanged %}
+    
+    {% ifchanged domanda.categoria %}</table><h3 id="{{domanda.safe_categoria}}">{{domanda.categoria}}</h3>{% endifchanged %}
+
+    {% if domanda.sotto_categoria == domanda.categoria %}
+    {% ifchanged domanda.sotto_categoria %}
+<table class="table">
+    {% endifchanged %}
+    {% else %}
+    {% ifchanged domanda.sotto_categoria %}</table><h4>{{domanda.sotto_categoria}}</h4>
+<table class="table">
+    {% endifchanged %}
+    {% endif %}
+
+        <tr id="Domanda{{ domanda.id }}"><td width="90%">{{ domanda.text }}</td><td width="10%">
+<div class="radio">
+  <label>
+    <input type="radio" name="{{domanda.id}}" id="{{domanda.id}}" value="1" >
+    Si
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="{{domanda.id}}" id="{{domanda.id}}" value="0">
+    No
+  </label>
+</div>
+</td></tr>
+	{% if forloop.last %} </table> {% endif %}
+
+    {% endfor %}
+{% csrf_token %}
+{% else %}
+    <p>Nessuna domanda.</p>
+{% endif %}
+</div>
+</div>
+{% endblock %}
+
+{% block destra %}
+<nav class="bs-docs-sidebar">
+        <ul id="sidebar" class="nav nav-stacked box_sommario">
+            <li>
+                <a href="#FettaA" class="navfA">Fetta A</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#Attività" class="navfA">Attività</a></li>
+                    <li><a href="#Stile" class="navfA">Stile</a></li>
+                    <li><a href="#Pattuglie" class="navfA">Pattuglie</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#FettaB" class="navfB">Fetta B</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#Progetto_di_reparto" class="navfB">Progetto di reparto</a></li>
+                    <li><a href="#1_impegno" class="navfB">1° impegno</a></li>
+                    <li><a href="#Promessa" class="navfB">Promessa</a></li>
+                    <li><a href="#Tappe_light" class="navfB">Tappe light</a></li>
+                    <li><a href="#Tecnica_scout" class="navfB">Tecnica scout</a></li>
+                    <li><a href="#Ruoli_di_pattuglia" class="navfB">Ruoli di pattuglia</a></li>
+                    <li><a href="#Ruolo_del_CP" class="navfB">Ruolo del CP</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#FettaC" class="navfC">Fetta C</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#Missione_di_pattuglia" class="navfC">Missione di pattuglia</a></li>
+                    <li><a href="#Tappe_Marry" class="navfC">Tappe Marry</a></li>
+                    <li><a href="#Specialità" class="navfC">Specialità</a></li>
+                    <li><a href="#Attività_con_i_CP" class="navfC">Attività con i CP</a></li>
+                    <li><a href="#Pianificazione_annuale" class="navfC">Pianificazione annuale</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+
+
+
+<div class="panel panel-default col-md-4 box_torta">
+  <div class="panel-body">
+            <div id="svgtortadiv" style="width:100%;"></div>
+            </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$('body').scrollspy({
+    target: '.bs-docs-sidebar',
+    offset: 40
+});
+
+	$(':radio').on('change', function(){
+		user = {{ user.id|add:"0" }};
+		year = new Date().getFullYear();
+		question = this.id;
+		response = this.value;
+		token = $('input[name=csrfmiddlewaretoken]').val();
+
+		$.post( "{% url 'save' %}", {user: user, year: year, question: question, response: response, csrfmiddlewaretoken: token}, function(data){
+    		console.log(data);
+		});
+
+		if (response == true) {
+			if (question < 16) {
+				$( 'path#svg' + question +'').attr('class','st0');
+			} else if(question > 15 && question < 45){
+				$( 'path#svg' + question +'').attr('class','st2');
+			} else {
+				$( 'path#svg' + question +'').attr('class','st1');
+			}
+			
+		} else {
+						if (question < 16) {
+				$( 'path#svg' + question +'').attr('class','st6');
+			} else if(question > 15 && question < 45){
+				$( 'path#svg' + question +'').attr('class','st5');
+			} else {
+				$( 'path#svg' + question +'').attr('class','st4');
+			}
+		}
+	});
+
+$('tr').on('mouseover', function(){
+	if (this.id.substring(7) < 16) {
+				$(this).attr('style','border-left: solid 2px #32ABDF; background-color: #EFF9FE');
+			} else if(this.id.substring(7) > 15 && this.id.substring(7) < 45){
+				$(this).attr('style','border-left: solid 2px #D9C827; background-color: #FFFEF3');
+			} else {
+				$(this).attr('style','border-left: solid 2px #3FB34F; background-color: #D1EADC');
+			}
+});
+
+$('tr').on('mouseout', function(){
+				$(this).attr('style','border-left: solid 2px #fff');
+				$(this).attr('style','background-color: #fff');
+
+});
+
+
+$('#announce').change(function() {
+	user = {{ user.id|add:"0" }};
+	year = new Date().getFullYear();
+	status = $(this).prop('checked');
+	token = $('input[name=csrfmiddlewaretoken]').val();
+
+		$.post( "{% url 'announce' %}", {user: user, year: year, status: status, csrfmiddlewaretoken: token}, function(data){
+    		console.log(data);
+		});
+    });
+
+
+	var risposte = [{% for risposta in risposte %}[{{risposta.domanda.id}},{% if risposta.risposta %}true{% else %}false{% endif %}],{% endfor %}];
+
+	 svg = Snap("#svgtortadiv");
+	 torta = Snap.load("{% static 'torta.svg' %}", function ( loadedFragment ) {
+	 											svgtorta = loadedFragment;
+                                                svg.append( loadedFragment );
+                                                update();
+                                        } );
+function update(){
+	for (var i = risposte.length - 1; i >= 0; i--) {
+		domanda = risposte[i][0];
+		risposta = risposte[i][1];
+		if (risposta==true) {
+			$("input[name="+domanda+"][value=1]").prop('checked', true);
+
+			if (domanda < 16) {
+				$( 'path#svg' + domanda +'').attr('class','st0');
+			} else if(domanda > 15 && domanda < 45){
+				$( 'path#svg' + domanda +'').attr('class','st2');
+			} else {
+				$( 'path#svg' + domanda +'').attr('class','st1');
+			}
+
+		}else{
+			$("input[name="+domanda+"][value=0]").prop('checked', true);
+		}
+	}
+
+	$('path').on('click', function(){
+		if(this.id.substring(0,1)=='s'){
+		location.hash = "#Domanda" + this.id.substring(3);
+		window.scrollBy(0, -70);
+
+					if (this.id.substring(3) < 16) {
+				$("#Domanda" + this.id.substring(3)).attr('style','background: #32ABDF');
+			} else if(this.id.substring(3) > 15 && this.id.substring(3) < 45){
+				$("#Domanda" + this.id.substring(3)).attr('style','background: #D9C827');
+			} else {
+				$("#Domanda" + this.id.substring(3)).attr('style','background: #3FB34F');
+			}
+		$("#Domanda" + this.id.substring(3)).animate({'backgroundColor': jQuery.Color( '#fff')},1000);
+		}
+	});
+
+}
+</script>
+{% endblock %}
